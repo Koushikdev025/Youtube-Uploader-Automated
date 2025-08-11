@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Sample Backgrounds</title>
+</head>
+<body>
+    <canvas id="canvas" width="1280" height="720" style="display: none;"></canvas>
+    <div id="output"></div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        const backgrounds = [
+            {
+                name: 'gaming-neon',
+                gradient: ['#ff006e', '#8338ec', '#3a86ff'],
+                pattern: 'radial'
+            },
+            {
+                name: 'tech-blue',
+                gradient: ['#0f3460', '#16537e', '#1e6091'],
+                pattern: 'linear'
+            },
+            {
+                name: 'education-clean',
+                gradient: ['#f8f9fa', '#e9ecef', '#dee2e6'],
+                pattern: 'linear'
+            },
+            {
+                name: 'youtube-red',
+                gradient: ['#ff0000', '#cc0000', '#990000'],
+                pattern: 'radial'
+            },
+            {
+                name: 'dark-purple',
+                gradient: ['#2d1b69', '#11998e', '#38ef7d'],
+                pattern: 'linear'
+            },
+
+            {
+                name: 'sunset-glow',
+                gradient: ['#ff7e5f', '#feb47b', '#ffd194'],
+                pattern: 'radical'
+            }
+        ];
+
+        backgrounds.forEach((bg, index) => {
+            // Clear canvas
+            ctx.clearRect(0, 0, 1280, 720);
+            
+            // Create gradient
+            let gradient;
+            if (bg.pattern === 'radial') {
+                gradient = ctx.createRadialGradient(640, 360, 0, 640, 360, 600);
+            } else {
+                gradient = ctx.createLinearGradient(0, 0, 1280, 720);
+            }
+            
+            bg.gradient.forEach((color, i) => {
+                gradient.addColorStop(i / (bg.gradient.length - 1), color);
+            });
+            
+            // Fill canvas
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 1280, 720);
+            
+            // Add some texture/pattern
+            ctx.globalAlpha = 0.1;
+            for (let i = 0; i < 50; i++) {
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(
+                    Math.random() * 1280,
+                    Math.random() * 720,
+                    Math.random() * 3 + 1,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+            }
+            ctx.globalAlpha = 1;
+            
+            // Convert to blob and create download link
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${bg.name}.jpg`;
+                a.textContent = `Download ${bg.name}.jpg`;
+                a.style.display = 'block';
+                a.style.margin = '10px 0';
+                document.getElementById('output').appendChild(a);
+            }, 'image/jpeg', 0.9);
+        });
+    </script>
+</body>
+</html>
